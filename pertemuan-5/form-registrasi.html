@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Registrasi Mahasiswa</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+        body { font-family: 'Poppins', sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background-color: #ffffff; padding: 30px 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); width: 100%; max-width: 500px; }
+        h1 { text-align: center; color: #333; margin-bottom: 10px; }
+        .form-group { margin-bottom: 20px; position: relative; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: #333; }
+        input[type="text"] { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; transition: border-color 0.3s; }
+        input[type="text"]:focus { border-color: #007bff; outline: none; }
+        button { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background-color 0.3s; }
+        button:hover { background-color: #0056b3; }
+        .suggestions-list { display: none; position: absolute; border: 1px solid #ddd; border-top: none; border-radius: 0 0 5px 5px; background-color: white; width: 100%; max-height: 150px; overflow-y: auto; z-index: 1000; box-sizing: border-box; }
+        .suggestion-item { padding: 10px; cursor: pointer; }
+        .suggestion-item:hover { background-color: #f0f0f0; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Form Registrasi Mata Kuliah</h1>
+
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="nama">Nama Mahasiswa</label>
+                <input type="text" id="nama" name="nama" placeholder="Ketik nama Anda.." required>
+                <div id="suggestions-box" class="suggestions-list"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="nim">NRP</label>
+                <input type="text" id="nim" name="nim" placeholder="Contoh: 5025241224" required>
+            </div>
+
+            <div class="form-group">
+                <label for="matkul">Mata Kuliah</label>
+                <input type="text" id="matkul" name="matkul" placeholder="Contoh: Pemrograman Web" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dosen">Dosen Mata Kuliah</label>
+                <input type="text" id="dosen" name="dosen" placeholder="Contoh: Ahamad Sahroni" required>
+            </div>
+
+            <button type="submit">Daftar Sekarang</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            let riwayatNama = JSON.parse(localStorage.getItem('riwayatNamaMahasiswa')) || [];
+
+            const namaInput = document.getElementById('nama');
+            const suggestionsBox = document.getElementById('suggestions-box');
+            const registrationForm = document.getElementById('registrationForm');
+
+            namaInput.addEventListener('input', function() {
+                const inputText = this.value.toLowerCase();
+                if (inputText.length === 0) {
+                    suggestionsBox.style.display = 'none';
+                    return;
+                }
+ 
+                const rekomendasi = riwayatNama.filter(nama =>
+                    nama.toLowerCase().includes(inputText)
+                );
+                if (rekomendasi.length > 0) {
+                    tampilkanRekomendasi(rekomendasi);
+                } else {
+                    suggestionsBox.style.display = 'none';
+                }
+            });
+
+            function tampilkanRekomendasi(rekomendasi) {
+                suggestionsBox.innerHTML = '';
+                rekomendasi.forEach(nama => {
+                    const div = document.createElement('div');
+                    div.textContent = nama;
+                    div.classList.add('suggestion-item');
+                    div.addEventListener('click', function() {
+                        namaInput.value = this.textContent;
+                        suggestionsBox.style.display = 'none';
+                    });
+                    suggestionsBox.appendChild(div);
+                });
+                suggestionsBox.style.display = 'block';
+            }
+            
+            document.addEventListener('click', function(e) {
+                if (e.target.id !== 'nama') {
+                    suggestionsBox.style.display = 'none';
+                }
+            });
+
+            registrationForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const nama = document.getElementById('nama').value.trim();
+                const nim = document.getElementById('nim').value.trim();
+                const matkul = document.getElementById('matkul').value.trim();
+                const dosen = document.getElementById('dosen').value.trim();
+
+                if (nama === '' || nim === '' || matkul === '' || dosen === '') {
+                    alert('Semua data wajib diisi!');
+                    return;
+                }
+                
+                if (!riwayatNama.includes(nama)) {
+                    riwayatNama.push(nama); 
+
+                    localStorage.setItem('riwayatNamaMahasiswa', JSON.stringify(riwayatNama));
+                }
+
+                alert(`Pendaftaran Berhasil!\n\nNama: ${nama}\nNIM: ${nim}\nMata Kuliah: ${matkul}\nDosen: ${dosen}`);
+                registrationForm.reset();
+            });
+        });
+    </script>
+</body>
+</html>
