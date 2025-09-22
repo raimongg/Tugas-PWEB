@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kode Pos Indonesia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background-color: #d9534f;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-form {
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .input-search-container {
+            display: flex;
+        }
+
+        .input-search-container input {
+            flex-grow: 1;
+            border-right: none;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        #search-btn {
+            padding: 10px 20px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        #search-btn:hover {
+            background-color: #4cae4c;
+        }
+
+        .search-results {
+            margin-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+        }
+
+        .result-box {
+            background-color: #dff0d8;
+            border: 1px solid #cce5b9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .result-header {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .result-content {
+            color: #3c763d;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Kode Pos Indonesia</h1>
+    </header>
+
+    <div class="container">
+        <p>Cari kode pos di wilayah Indonesia dengan memasukkan beberapa kata kunci pencarian di bawah ini.</p>
+
+        <div class="search-form">
+            <div class="form-group">
+                <label for="provinsi">Provinsi</label>
+                <select id="provinsi" class="form-control"></select>
+            </div>
+            <div class="form-group">
+                <label for="kabupaten">Kota atau Kabupaten</label>
+                <select id="kabupaten" class="form-control"></select>
+            </div>
+            <div class="form-group">
+                <label for="keyword">Masukkan Kata Kunci Pencarian</label>
+                <div class="input-search-container">
+                    <input type="text" id="keyword" class="form-control" placeholder="Contoh: 60111">
+                    <button id="search-btn">Cari</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-results">
+            <h2>Hasil Pencarian</h2>
+            <div id="result-text"></div>
+            <div id="result-box" class="result-box" style="display:none;">
+                <div class="result-header"></div>
+                <div class="result-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const provinsiSelect = document.getElementById('provinsi');
+            const kabupatenSelect = document.getElementById('kabupaten');
+            const keywordInput = document.getElementById('keyword');
+            const searchBtn = document.getElementById('search-btn');
+            const resultText = document.getElementById('result-text');
+            const resultBox = document.getElementById('result-box');
+            const resultHeader = resultBox.querySelector('.result-header');
+            const resultContent = resultBox.querySelector('.result-content');
+
+
+            const data = {
+                'DKI Jakarta': {
+                    'Jakarta Pusat': [
+                        { kodePos: '10110', kelurahan: 'Gambir', kecamatan: 'Gambir' },
+                        { kodePos: '10120', kelurahan: 'Kebon Kelapa', kecamatan: 'Gambir' },
+                        { kodePos: '10130', kelurahan: 'Petojo Selatan', kecamatan: 'Gambir' },
+                        { kodePos: '10210', kelurahan: 'Tanah Abang', kecamatan: 'Tanah Abang' },
+                        { kodePos: '10220', kelurahan: 'Bendungan Hilir', kecamatan: 'Tanah Abang' }
+                    ],
+                    'Jakarta Selatan': [
+                        { kodePos: '12110', kelurahan: 'Melawai', kecamatan: 'Kebayoran Baru' },
+                        { kodePos: '12120', kelurahan: 'Petogogan', kecamatan: 'Kebayoran Baru' },
+                        { kodePos: '12130', kelurahan: 'Rawa Barat', kecamatan: 'Kebayoran Baru' },
+                        { kodePos: '12140', kelurahan: 'Senayan', kecamatan: 'Kebayoran Baru' }
+                    ]
+                },
+                'Jawa Barat': {
+                    'Bandung': [
+                        { kodePos: '40111', kelurahan: 'Pasirkaliki', kecamatan: 'Cicendo' },
+                        { kodePos: '40115', kelurahan: 'Arjuna', kecamatan: 'Cicendo' },
+                        { kodePos: '40116', kelurahan: 'Pajajaran', kecamatan: 'Cicendo' },
+                        { kodePos: '40121', kelurahan: 'Sukabungah', kecamatan: 'Sukajadi' },
+                        { kodePos: '40123', kelurahan: 'Pasteur', kecamatan: 'Sukajadi' },
+                    ],
+                    'Depok': [
+                        { kodePos: '16411', kelurahan: 'Depok Jaya', kecamatan: 'Pancoran Mas' },
+                        { kodePos: '16413', kelurahan: 'Pancoran Mas', kecamatan: 'Pancoran Mas' }
+                    ]
+                },
+                'Jawa Timur': {
+                    'Surabaya': [
+                        { kodePos: '60111', kelurahan: 'Keputih', kecamatan: 'Sukolilo' },
+                        { kodePos: '60112', kelurahan: 'Gebang Putih', kecamatan: 'Sukolilo' },
+                        { kodePos: '60113', kelurahan: 'Manyar Sabrangan', kecamatan: 'Sukolilo' },
+                        { kodePos: '60281', kelurahan: 'Jemur Wonosari', kecamatan: 'Wonocolo' },
+                        { kodePos: '60282', kelurahan: 'Margorejo', kecamatan: 'Wonocolo' },
+                    ],
+                    'Malang': [
+                        { kodePos: '65111', kelurahan: 'Oro-Oro Dowo', kecamatan: 'Klojen' },
+                        { kodePos: '65112', kelurahan: 'Samaan', kecamatan: 'Klojen' },
+                        { kodePos: '65121', kelurahan: 'Arjosari', kecamatan: 'Blimbing' }
+                    ]
+                }
+            };
+
+            function populateProvinsi() {
+                provinsiSelect.innerHTML = '<option value="">Pilih Provinsi</option>';
+                Object.keys(data).forEach(provinsi => {
+                    const option = document.createElement('option');
+                    option.value = provinsi;
+                    option.textContent = provinsi;
+                    provinsiSelect.appendChild(option);
+                });
+            }
+
+            function populateKabupaten() {
+                const selectedProvinsi = provinsiSelect.value;
+                kabupatenSelect.innerHTML = '<option value="">Pilih Kota atau Kabupaten</option>';
+                if (selectedProvinsi && data[selectedProvinsi]) {
+                    Object.keys(data[selectedProvinsi]).forEach(kabupaten => {
+                        const option = document.createElement('option');
+                        option.value = kabupaten;
+                        option.textContent = kabupaten;
+                        kabupatenSelect.appendChild(option);
+                    });
+                }
+            }
+
+            provinsiSelect.addEventListener('change', populateKabupaten);
+
+            searchBtn.addEventListener('click', () => {
+                const selectedProvinsi = provinsiSelect.value;
+                const selectedKabupaten = kabupatenSelect.value;
+                const keyword = keywordInput.value.trim();
+
+                resultBox.style.display = 'none';
+                resultText.textContent = '';
+
+                if (!keyword) {
+                    resultText.textContent = 'Silakan masukkan kata kunci pencarian.';
+                    return;
+                }
+
+                const filteredData = data[selectedProvinsi]?.[selectedKabupaten]?.filter(item =>
+                    item.kodePos === keyword ||
+                    item.kelurahan.toLowerCase().includes(keyword.toLowerCase()) ||
+                    item.kecamatan.toLowerCase().includes(keyword.toLowerCase())
+                );
+
+                if (filteredData && filteredData.length > 0) {
+                    const result = filteredData[0]; 
+                    resultText.textContent = `Hasil pencarian kode pos dengan menggunakan kata kunci "${keyword}" telah ditemukan sebanyak ${filteredData.length} buah.`;
+                    resultHeader.textContent = result.kelurahan;
+                    resultContent.innerHTML = `Kode pos **${result.kodePos}** untuk daerah Kelurahan **${result.kelurahan}**, Kecamatan **${result.kecamatan}**.`;
+                    resultBox.style.display = 'block';
+                } else {
+                    resultText.textContent = `Tidak ada hasil yang ditemukan untuk kata kunci "${keyword}".`;
+                }
+            });
+
+            populateProvinsi();
+        });
+    </script>
+</body>
+</html>
