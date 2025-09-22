@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Drop Down List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f7f7f7; 
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 25px;
+            border: 1px solid #ccc;
+            border-radius: 8px; 
+            max-width: 600px;
+        }
+
+        h1 {
+            font-family: 'Times New Roman', Times, serif; 
+            font-size: 24px;
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        select {
+            padding: 8px 12px;
+            margin-right: 10px;
+            font-size: 14px;
+            border: 1px solid #a9a9a9; 
+            background-color: #f0f0f0; 
+            border-radius: 4px;
+            appearance: none; 
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: 10px auto;
+            min-width: 150px; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Dynamic Drop Down List dengan JavaScript</h1>
+
+        <select id="jenisProduk">
+            <option value="">Pilih Jenis Produk</option>
+            <option value="smartphone">Smartphone</option>
+            <option value="laptop">Laptop</option>
+            <option value="desktop">Desktop</option>
+        </select>
+
+        <select id="merkProduk">
+            <option value="">Pilih Merk</option>
+        </select>
+    </div>
+
+    <script>
+        const dataMerk = {
+            smartphone: ["Samsung", "Apple", "Xiaomi", "Oppo", "Vivo"],
+            laptop: ["Dell", "HP", "Lenovo", "Asus", "MacBook"],
+            desktop: ["HP Pavilion", "Dell Inspiron", "Asus ROG", "Lenovo IdeaCentre"]
+        };
+
+        const jenisProdukSelect = document.getElementById('jenisProduk');
+        const merkProdukSelect = document.getElementById('merkProduk');
+
+        jenisProdukSelect.addEventListener('change', function() {
+            const selectedJenis = this.value;
+            merkProdukSelect.innerHTML = '<option value="">Pilih Merk</option>';
+
+            if (selectedJenis) {
+                const merkTersedia = dataMerk[selectedJenis];
+                merkTersedia.forEach(function(merk) {
+                    const option = document.createElement('option');
+                    option.value = merk.toLowerCase().replace(" ", "-");
+                    option.textContent = merk;
+                    merkProdukSelect.appendChild(option);
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
