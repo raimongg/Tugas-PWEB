@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-g">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Submit Form Without Page Refresh</title>
+    <script src="https://code.jquery.com/3.7.1.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2em;
+        }
+        .form-group {
+            margin-bottom: 1em;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5em;
+        }
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            width: 300px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #status {
+            margin-top: 1em;
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Demo Submit Form Without Page Refresh</h2>
+
+    <form id="contactForm" method="POST">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="message">Pesan:</label>
+            <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="status"></div>
+
+    <script>
+    $(document).ready(function() {
+
+        $('#contactForm').on('submit', function(event) {
+            event.preventDefault();
+
+            $.ajax({
+                url: 'proses_form.php', 
+                type: 'POST',           
+                data: $(this).serialize(), 
+                
+                success: function(response) {
+                    $('#status').html(response);
+                    $('#contactForm')[0].reset(); 
+                },
+                
+                error: function() {
+                    $('#status').html('Terjadi kesalahan saat mengirim data.');
+                    $('#status').css('color', 'red');
+                }
+            });
+        });
+    });
+    </script>
+
+</body>
+</html>
