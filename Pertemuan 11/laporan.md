@@ -56,3 +56,15 @@ htdocs/LaundryCraft/
     ├── status.php
     ├── hapus_pelanggan.php
     └── ... (file logika lainnya)
+```
+
+## Tampilan Web
+
+<img width="1919" height="943" alt="image" src="https://github.com/user-attachments/assets/5a576ac0-2c37-40dd-8322-fd30d04f7f6b" />
+
+<img width="1919" height="875" alt="image" src="https://github.com/user-attachments/assets/9ec766cb-390c-4d7a-afbf-c063f9384f51" />
+
+<img width="1919" height="880" alt="image" src="https://github.com/user-attachments/assets/6b80cc1c-175f-4f82-81d9-4055062a9275" />
+
+
+
